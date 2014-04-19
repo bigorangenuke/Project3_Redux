@@ -10,8 +10,8 @@ dbg = False
 #Default size values for the reactor.
 DEFAULT_M_NODES = 5
 DEFAULT_N_NODES = 5
-DEFAULT_X_SIZE = 1.
-DEFAULT_Y_SIZE = 1.
+DEFAULT_X_SIZE = 100.
+DEFAULT_Y_SIZE = 100.
 DEFAULT_G = 2.
 #Pixel height/width for QTableWidgetItems
 CELL_SIZE = 10
@@ -247,12 +247,10 @@ class CoreWidget(QtGui.QWidget):
             item.set_material(int(CellMaterial().materials['MOX']))
         self.saveCore('_currentcore')
         
-
-        
     def reactorComboBoxActivated(self,text):
         if dbg: print('gui.CoreDockWidget.reactorComboBoxActivated')
-        
-        
+        cr = self.loadCoreTableFromFile(text)
+        self.drawCore(cr)
         
         
     def materialComboBoxActivated(self,text):
