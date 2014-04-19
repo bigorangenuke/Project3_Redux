@@ -12,9 +12,9 @@ DEFAULT_M_NODES = 5
 DEFAULT_N_NODES = 5
 DEFAULT_X_SIZE = 1.
 DEFAULT_Y_SIZE = 1.
-
+DEFAULT_G = 2.
 #Pixel height/width for QTableWidgetItems
-CELL_SIZE = 15
+CELL_SIZE = 10
 
 
 class CellMaterial():
@@ -97,15 +97,15 @@ class NodeTableWidgetItem(QtGui.QTableWidgetItem):
         return self.row,self.column,self.material
     
 class CoreWidget(QtGui.QWidget):
-    def __init__(self,parent=None):
+    def __init__(self,pctrl,parent=None):
         
         if dbg: print('gui.CoreWidget.__init__()')
         #Load the core widget
-        QtGui.QDockWidget.__init__(self,parent)
+        QtGui.QWidget.__init__(self,parent)
         uic.loadUi(path_to('corewidget.ui'),self)
-        
+        self.parentcontroller = pctrl
         #Give some initial values for the size attributes
-        self.set_reactor_parameters(DEFAULT_M_NODES,DEFAULT_N_NODES,DEFAULT_X_SIZE,DEFAULT_Y_SIZE)
+        self.set_reactor_parameters(DEFAULT_M_NODES,DEFAULT_N_NODES,DEFAULT_X_SIZE,DEFAULT_Y_SIZE,DEFAULT_G)
 
         core = self.loadBlankCoreTable()
         self.coreTable = core
@@ -117,12 +117,22 @@ class CoreWidget(QtGui.QWidget):
     # Parameters
     #===============================================================================
         
-    def set_reactor_parameters(self,m,n,xsize,ysize):
+    def set_reactor_parameters(self,m,n,xsize,ysize,g):
         self.set_m(m)
         self.set_n(n)
         self.set_xsize(xsize)
         self.set_ysize(ysize)
+        self.set_groups(g)
+        
+    def set_groups(self,g):
+        if g == 2:
+            self.groupComboBox.setCurrentIndex(0)
+        elif g ==4:
+            self.groupComboBox.setCurrentIndex(1)
+        else: assert(False)
 
+        self.g = g
+        
     def set_m(self,m):
         self.mNodesLineEdit.setText(str(m))
         self.m = m
@@ -145,14 +155,27 @@ class CoreWidget(QtGui.QWidget):
         self.n = int(self.nNodesLineEdit.text())
         self.xsize = float(self.mNodesLineEdit.text())
         self.ysize = float(self.ySizeLineEdit.text())
+        self.g = int(self.groupComboBox.currentText())
     
     def updateSizeFields(self):
         if dbg: print('gui.CoreDockWidget.updateSizeFields')
         self.mNodesLineEdit.setText(str(self.m))
         self.nNodesLineEdit.setText(str(self.n))
         self.xSizeLineEdit.setText(str(self.xsize))
-        self.ySizeLineEdit.setText(str(self.ysize))    
-
+        self.ySizeLineEdit.setText(str(self.ysize))   
+        self.groupComboBox.setCurrentIndex(self.indexForGroup(self.g))
+        
+    def indexForGroup(self,g):
+        i=None
+        if g==2:
+            i = 0
+        elif g==4:
+            i = 1
+        else:
+            print('Group number is not 2 or 4')
+            assert(False)
+        return i
+        
     #===============================================================================
     # GUI
     #===============================================================================
@@ -162,17 +185,20 @@ class CoreWidget(QtGui.QWidget):
         self.ySizeLineEdit.editingFinished.connect(self.updateSize)
         self.mNodesLineEdit.editingFinished.connect(self.updateSize)
         self.nNodesLineEdit.editingFinished.connect(self.updateSize)
-        
+
+        self.groupComboBox.addItems([str(2),str(4)])
+        self.groupComboBox.activated[str].connect(self.updateSize)
         #self.materialComboBox.addItems(list(CellMaterial().materials.keys()))
         #self.materialComboBox.activated[str].connect(self.materialComboBoxActivated)
         
         self.updateCorePushButton.clicked.connect(self.updateCoreButtonIsPressed)
+        self.calculatePushButton.clicked.connect(self.parentcontroller.solveStuff)
+        
         
         self.loadCorePushButton.clicked.connect(self.loadCoreButtonIsPressed)
         self.saveCorePushButton.clicked.connect(self.saveCore)
         
         self.reactorComboBox.addItems(jtools.filesInDirectoryWithExtension(jtools.currentDirectory(), '*.core'))
-        
         self.reactorComboBox.activated[str].connect(self.reactorComboBoxActivated)
         
         matkeys = list(CellMaterial().materials.keys())
@@ -204,17 +230,25 @@ class CoreWidget(QtGui.QWidget):
     def colorCoreWater(self):
         for item in self.coreTable.selectedItems():
             item.set_material(int(CellMaterial().materials['Water']))
+        self.saveCore('_currentcore')
+        
     def colorCoreDu(self):
         for item in self.coreTable.selectedItems():
             item.set_material(int(CellMaterial().materials['DU']))
+        self.saveCore('_currentcore')
+        
     def colorCoreFuel(self):
         for item in self.coreTable.selectedItems():
             item.set_material(int(CellMaterial().materials['Fuel']))
+        self.saveCore('_currentcore')
+        
     def colorCoreMox(self):
         for item in self.coreTable.selectedItems():
             item.set_material(int(CellMaterial().materials['MOX']))
-    
-    
+        self.saveCore('_currentcore')
+        
+
+        
     def reactorComboBoxActivated(self,text):
         if dbg: print('gui.CoreDockWidget.reactorComboBoxActivated')
         
@@ -368,19 +402,19 @@ def removeWidgetsFromLayout(layout):
         return False
     return True      
 
-def setupMainWindow(filename):
+def setupMainWindow(pctrl, filename):
 
     #graphDockWidget = GraphDockWidget()
     #mainWindow.addDockWidget(QtCore.Qt.LeftDockWidgetArea,graphDockWidget)
     mainWindow = MainWindow()
-    coreWidget = CoreWidget()
     
+    coreWidget = CoreWidget(pctrl)
     cr = coreWidget.loadCoreTableFromFile(filename)
     coreWidget.drawCore(cr)
     
     mainWindow.setCentralWidget(coreWidget)
     #mainWindow.addDockWidget(QtCore.Qt.RightDockWidgetArea,coreDockWidget)
-    return mainWindow
+    return mainWindow,coreWidget
 
 
 if __name__=='__main__':

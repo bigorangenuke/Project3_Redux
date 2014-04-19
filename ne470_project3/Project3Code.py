@@ -15,15 +15,17 @@ import matplotlib.pyplot as plt
 
 from mpl_toolkits.axes_grid1 import ImageGrid
 import core_loader 
+dbg = False
 
 def solve(M=10,N=10,W=100,H=100,G=4,filename=None):
+    if dbg: print('Project3Code.solve start')
     start = time.time()
     
     # User Defined Parameters
     # If you wish to change anything in this problem, the variables that
     # can be modified are located here.
     
-    fn = 'smile.core'
+    fn = filename
     
     LayoutSQ = core_loader.loadCore(fn)
     N = LayoutSQ.shape[1]
@@ -325,8 +327,7 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None):
     
     
     
-    
-    
+        plt.clf()
         #Create an 8x4 figuer
         fig = plt.figure(1,(8.,4.))
         #Create an image grid obejct with 1 colorbar
@@ -342,7 +343,7 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None):
     
         #Set colorbar scale
         grid.cbar_axes[0].colorbar(g0)
-    
+        fig.canvas.draw()
     
     
         # fig = plt.figure(figsize=(12, 6.4))
@@ -523,7 +524,8 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None):
         Sigmas_34 = [Sigmas0_34, Sigmas1_34, Sigmas2_34, Sigmas3_34]
         nuSigmaf_4 = [nuSigmaf0_4, nuSigmaf1_4, nuSigmaf2_4, nuSigmaf3_4]
         Chi_4 = [Chi0_4, Chi1_4, Chi2_4, Chi3_4]
-        
+        if dbg:print(time.time()-start)
+        if dbg:print('~~~~Start Group 1 of 4~~~~')
         # ~~~~~~~~~~~~~~~~~~~~~~~~
         # Group 1 (of 4) Fast Calculations
         
@@ -553,7 +555,8 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None):
             B[k1,int(k1+(x/G))] = Chi_1[matc]*nuSigmaf_2[matc]
             B[k1,int(k1+(2*x/G))] = Chi_1[matc]*nuSigmaf_3[matc]
             B[k1,int(k1+(3*x/G))] = Chi_1[matc]*nuSigmaf_4[matc]
-        
+        if dbg:print(time.time()-start)
+        if dbg:print('~~~~Start Group 2 of 4~~~~')
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Group 2 (of 4) Second Fastest Calculations
         
@@ -584,8 +587,8 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None):
             B[k2,int(k2)] = Chi_2[matc]*nuSigmaf_2[matc]
             B[k2,int(k2+(x/G))] = Chi_2[matc]*nuSigmaf_3[matc]
             B[k2,int(k2+(2*x/G))] = Chi_2[matc]*nuSigmaf_4[matc]
-            
-            
+        if dbg:print(time.time()-start)    
+        if dbg:print('~~~~Start Group 3 of 4~~~~')   
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Group 3 (of 4) Second Slowest Calculations
         
@@ -620,6 +623,8 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None):
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Group 4 (of 4) Thermal Calculations
         
+        if dbg:print(time.time()-start)
+        if dbg:print('~~~~Start Group 4 of 4~~~~')
         for k4 in range(int(3*x/G),int(4*x/G)):
             # Retrieve indices i,j from k4
             ok = k4-(3*x/G) # original k index in format matrix
@@ -665,6 +670,7 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None):
             keff = kold*nm.sum(S)/nm.sum(Sold)
             fluxdiff = abs((flux-fluxold)/flux)
             maxfluxdiff = fluxdiff.max()
+            if dbg: print(time.time()-start,maxfluxdiff)
             
         
         # This puts the flux values back into a NxM matrix to display the flux values
@@ -725,6 +731,8 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None):
         # plt.show()
     
         #Create an 8x4 figuer
+        if dbg: print('Project3Code.solve plot 4 group flux')
+        plt.clf()
         fig = plt.figure(1,(12.,12.))
         #Create an image grid obejct with 1 colorbar
         grid = ImageGrid(fig,111,nrows_ncols=(2,2),axes_pad=0.5,cbar_mode = 'single')#,aspect = False)#,cbar_mode='single')
@@ -742,7 +750,7 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None):
     
         grid[3].imshow(fluxSQ_4,cmap='jet')
         grid[3].set_title('Group 4')
-        plt.tight_layout()
         #Set colorbar scale
         grid.cbar_axes[0].colorbar(g0)
+        fig.canvas.draw()
     return keff    
