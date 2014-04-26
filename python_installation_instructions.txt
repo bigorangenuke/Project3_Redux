@@ -1,0 +1,57 @@
+___________________________Dependencies______________________________
+Python 3.3.5
+SciPy stack
+PyQt4
+	Note: PyQt isn't compatible with Enthought Canopy.
+
+___________________Installation Instructions____________________________________________
+
+========On OS X==========
+
+	Install macports
+		https://www.macports.org/install.php
+
+	In the terminal:
+	Install Python 3.3
+		sudo port install py33
+
+	Install SciPy Stack for Python 3.3
+		sudo port install py33 py33-numpy py33-scipy py33-matplotlib py33-ipython +notebook py33-pandas py33-sympy py33-nose 
+
+	Install PyQt4 for Python 3.3
+		sudo port install py33-pyqt4
+
+	Here is how to set default python version in osx. This isn't necessary if you don't intend to use python 3.3 as your default version.
+		http://stackoverflow.com/questions/18425379/mac-set-default-python-version-to-3-3
+	 
+	Make sure your interpreter is pointing to the right version of python.
+
+==========On Windows===========
+
+	Go here and download Python 3.3.5.
+		https://www.python.org/downloads/
+
+	You can download executable installers here
+		http://www.lfd.uci.edu/~gohlke/pythonlibs/
+
+	Installers you need:
+		http://www.lfd.uci.edu/~gohlke/pythonlibs/#scipy-stack
+		http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyqt
+
+		Get the packages and run the executable file
+
+
+	If you have more than one version of python installed, you can use Path Editor to create a system environment variable that points to the folder /path/to/Python33/
+
+	Make sure your interpreter is referencing the correct version of python.
+
+	If you want a barebones interpreter, use sublime text:
+		http://www.sublimetext.com/3
+
+	If you want an IDE, use Eclipse with PyDev. It's pretty super.
+		https://www.eclipse.org/downloads/packages/eclipse-standard-432/keplersr2
+		http://pydev.org/manual_101_install.html
+
+
+
+

@@ -14,17 +14,17 @@ DEFAULT_X_SIZE = 100.
 DEFAULT_Y_SIZE = 100.
 DEFAULT_G = 2.
 #Pixel height/width for QTableWidgetItems
-CELL_SIZE = 10
+CELL_SIZE = 30
 
 
 class CellMaterial():
     #Dictionary of possible cell materials
     def __init__(self):
-        self.materials = {'Water': 0,'Fuel':1,'MOX':2,'DU':3}
-        self.fuel   =   self.materials['Fuel']
+        self.materials = {'Water': 0,'4% LEU':1,'MOX':2,'10% LEU':3}
+        self.fuel   =   self.materials['4% LEU']
         self.water  =   self.materials['Water']
         self.mox    =   self.materials['MOX']
-        self.du     =   self.materials['DU']
+        self.du     =   self.materials['10% LEU']
         
 class MainWindow(QtGui.QMainWindow):
     def __init__(self,parent=None):
@@ -153,7 +153,7 @@ class CoreWidget(QtGui.QWidget):
         if dbg: print('gui.CoreDockWidget.updateSize()')
         self.m = int(self.mNodesLineEdit.text())
         self.n = int(self.nNodesLineEdit.text())
-        self.xsize = float(self.mNodesLineEdit.text())
+        self.xsize = float(self.xSizeLineEdit.text())
         self.ysize = float(self.ySizeLineEdit.text())
         self.g = int(self.groupComboBox.currentText())
     
@@ -179,54 +179,52 @@ class CoreWidget(QtGui.QWidget):
     #===============================================================================
     # GUI
     #===============================================================================
+    def calculateButtonIsPressed(self):
+        self.calculatePushButton.enabled=False
+        self.parentcontroller.solveStuff()
+        self.calculatePushButton.enabled=True
+        
+        
+        
     def hookupUI(self):
         if dbg: print('gui.CoreDockWidget.hookupUI()')
+        
+        #QLineEdits
         self.xSizeLineEdit.editingFinished.connect(self.updateSize)
         self.ySizeLineEdit.editingFinished.connect(self.updateSize)
         self.mNodesLineEdit.editingFinished.connect(self.updateSize)
         self.nNodesLineEdit.editingFinished.connect(self.updateSize)
-
+        
+        
+        #Combo box containing allowed values for the number of energy groups
         self.groupComboBox.addItems([str(2),str(4)])
         self.groupComboBox.activated[str].connect(self.updateSize)
-        #self.materialComboBox.addItems(list(CellMaterial().materials.keys()))
-        #self.materialComboBox.activated[str].connect(self.materialComboBoxActivated)
         
+        #Buttons
         self.updateCorePushButton.clicked.connect(self.updateCoreButtonIsPressed)
-        self.calculatePushButton.clicked.connect(self.parentcontroller.solveStuff)
-        
-        
+        self.calculatePushButton.clicked.connect(self.calculateButtonIsPressed)
         self.loadCorePushButton.clicked.connect(self.loadCoreButtonIsPressed)
         self.saveCorePushButton.clicked.connect(self.saveCore)
         
+        #Combo box containing all .core files in the local directory
         self.reactorComboBox.addItems(jtools.filesInDirectoryWithExtension(jtools.currentDirectory(), '*.core'))
         self.reactorComboBox.activated[str].connect(self.reactorComboBoxActivated)
         
+        #Create buttons for each material 
         matkeys = list(CellMaterial().materials.keys())
-    
-#         
-#         layout = QtGui.QVBoxLayout()
-#           
-#         for key in matkeys:
-#             btn = QtGui.QPushButton(key)
-#             if key =='Water':
-#                 print('connect water')
-#                 btn.clicked.connect(self.colorCoreWater)
-#             layout.addWidget(btn)
-        print(matkeys)
         layout = self.nodeMaterialLayout
         for key in matkeys:
             btn = QtGui.QPushButton(key)
             if key =='Water':
                 btn.clicked.connect(self.colorCoreWater)
-            if key =='DU':
+            if key =='10% LEU':
                 btn.clicked.connect(self.colorCoreDu)
-            if key =='Fuel':
+            if key =='4% LEU':
                 btn.clicked.connect(self.colorCoreFuel)
             if key=='MOX':
                 btn.clicked.connect(self.colorCoreMox)
             layout.addWidget(btn)
-        #self.nodeGroupBox.setLayout(layout)
-        
+
     def colorCoreWater(self):
         for item in self.coreTable.selectedItems():
             item.set_material(int(CellMaterial().materials['Water']))
@@ -234,12 +232,12 @@ class CoreWidget(QtGui.QWidget):
         
     def colorCoreDu(self):
         for item in self.coreTable.selectedItems():
-            item.set_material(int(CellMaterial().materials['DU']))
+            item.set_material(int(CellMaterial().materials['10% LEU']))
         self.saveCore('_currentcore')
         
     def colorCoreFuel(self):
         for item in self.coreTable.selectedItems():
-            item.set_material(int(CellMaterial().materials['Fuel']))
+            item.set_material(int(CellMaterial().materials['4% LEU']))
         self.saveCore('_currentcore')
         
     def colorCoreMox(self):
@@ -247,20 +245,9 @@ class CoreWidget(QtGui.QWidget):
             item.set_material(int(CellMaterial().materials['MOX']))
         self.saveCore('_currentcore')
         
-    def reactorComboBoxActivated(self,text):
-        if dbg: print('gui.CoreDockWidget.reactorComboBoxActivated')
-        cr = self.loadCoreTableFromFile(text)
-        self.drawCore(cr)
+
         
-        
-    def materialComboBoxActivated(self,text):
-        if dbg: print ('gui.CoreDockWidget.materialComboBoxActivated')
-        #Change selection in table to be material
-        for item in self.coreTable.selectedItems():
-            print('new material = ',text)
-            item.set_material(int(CellMaterial().materials[text]))
-        
-        self.saveCore('_currentcore')
+      
         
     #===========================================================================
     # Core management
@@ -289,6 +276,10 @@ class CoreWidget(QtGui.QWidget):
         print(f)
         f.close()
 
+    def reactorComboBoxActivated(self,text):
+        if dbg: print('gui.CoreDockWidget.reactorComboBoxActivated')
+        cr = self.loadCoreTableFromFile(text)
+        self.drawCore(cr)
     
     def defaultCore(self):
         self.updateSize()
@@ -297,6 +288,8 @@ class CoreWidget(QtGui.QWidget):
     def loadCoreButtonIsPressed(self):          
         core = self.loadCoreTableFromFile()
         self.drawCore(core)
+        self.coreTable = core
+        self.saveCore('_currentcore')
     
     def loadBlankCoreTable(self):
         core = QtGui.QTableWidget(self.m,self.n)
@@ -341,7 +334,7 @@ class CoreWidget(QtGui.QWidget):
             m = int(l[2].strip())
             ctable.setItem(i,j,NodeTableWidgetItem(i,j,m))
         print(ctable)
-        
+        self.saveCore('_currentcore')
         return ctable
 
     
@@ -371,7 +364,8 @@ class CoreWidget(QtGui.QWidget):
         layout.addWidget(core)
     
         #Resize and save it
-        self.coreTable = jtools.resizeTableCells(core,20)
+        self.coreTable = jtools.resizeTableCells(core,CELL_SIZE)
+        self.saveCore('_currentcore')
     
     
     def updateCoreButtonIsPressed(self):
@@ -415,14 +409,6 @@ def setupMainWindow(pctrl, filename):
     return mainWindow,coreWidget
 
 
-if __name__=='__main__':
-    
-    app = QtGui.QApplication([])
-    mainWindow = MainWindow()
-    setupMainWindow()
-    mainWindow.show()
-
-    app.exec_()
 
  
     

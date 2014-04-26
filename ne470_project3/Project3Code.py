@@ -4,6 +4,8 @@ Hunter Ratliff
 NE 470 Project 3 (Honors)
 Created on Apr 18, 2014
 
+Modified by Joseph Conner
+
 @author: Hunter
 '''
 # Import the libraries that will be needed.
@@ -17,21 +19,25 @@ from mpl_toolkits.axes_grid1 import ImageGrid
 import core_loader 
 dbg = False
 
-def solve(M=10,N=10,W=100,H=100,G=4,filename=None):
+def solve(M=10,N=10,W=100,H=100,G=4,filename=None,doPlot = True,doSave=False):
     if dbg: print('Project3Code.solve start')
     start = time.time()
     
     # User Defined Parameters
     # If you wish to change anything in this problem, the variables that
     # can be modified are located here.
-    
+    if not filename:
+        filename = '_kcheck.core'
+
+
+
     fn = filename
     
     LayoutSQ = core_loader.loadCore(fn)
     N = LayoutSQ.shape[1]
     
-    
-    
+    track_k = []
+    track_s = []
     # LayoutSQ=nm.array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     #                    [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0],
     #                    [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0],
@@ -72,7 +78,8 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None):
     flux = nm.ones((int(x),1)) # initial guess for flux
     S = nm.zeros((int(x),1))
     keff = 1 # initial guess for k_eff
-    
+    track_k.append(keff)
+    track_s.append(S)
     # -----------------------------------------------------------------------------
     # Create a materials layout in the slab/core
     # 0 = Water, 1 = PWR fuel, 2 = MOX, 3 = 10 w/o U-235
@@ -152,7 +159,7 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None):
     
     # Convert the NxM matrix into a (N-2)*(M-2) x 1 vector
     Layout = nm.zeros((int((N-2)*(M-2)),1))
-    print(N,M)
+    if dbg: print(N,M)
     c = 0
     for a in range(0,N-2):
         for b in range(0,M-2):
@@ -177,36 +184,36 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None):
         
         # Material 1, PWR core (fuel)
         # Group 1 (Fast)
-        D1_1 = 1.37992144
-        SigmaR1_1 = 0.0211759508
-        nuSigmaf1_1 = 0.006275169
+        D1_1 = 1.47514248
+        SigmaR1_1 = 8.89804307e-03
+        nuSigmaf1_1 = 7.58585753e-03
         # Group 2 (Thermal)
-        D1_2 = 0.347982913
-        SigmaA1_2 = 0.169504672
-        Sigmas1_12 = 0.007792421
-        nuSigmaf1_2 = 0.170405298
+        D1_2 = 3.34128827e-01
+        SigmaA1_2 = 9.00137126e-02
+        Sigmas1_12 = 1.93917640e-02
+        nuSigmaf1_2 = 1.36130318e-01
         
         # Material 2, MOX
         # Group 1 (Fast)
-        D2_1 = 1.39077759
-        SigmaR2_1 = 0.022618704
-        nuSigmaf2_1 = 0.010309801
+        D2_1 = 1.46842682
+        SigmaR2_1 = 1.10678272e-2
+        nuSigmaf2_1 = 9.30305105e-3
         # Group 2 (Thermal)
-        D2_2 = 0.330231041
-        SigmaA2_2 = 0.236973867
-        Sigmas2_12 = 0.006917485
-        nuSigmaf2_2 = 0.301609993
+        D2_2 = 2.95294464e-01
+        SigmaA2_2 = 1.63709238e-1
+        Sigmas2_12 = 1.74693074e-2
+        nuSigmaf2_2 = 2.61087507e-1
         
-        # Material 3, 10 w/o U-235
+        # Material 3, 10% U-235
         # Group 1 (Fast)
-        D3_1 = 1.37295794
-        SigmaR3_1 = 0.022231713
-        nuSigmaf3_1 = 0.007814325
+        D3_1 = 1.48997104
+        SigmaR3_1 = 1.14417057e-2
+        nuSigmaf3_1 = 1.27420006e-2
         # Group 2 (Thermal)
-        D3_2 = 0.291040182
-        SigmaA3_2 = 0.313600838
-        Sigmas3_12 = 0.006906346
-        nuSigmaf3_2 = 0.398054212
+        D3_2 = 3.22502375e-01
+        SigmaA3_2 = 1.29340038e-1
+        Sigmas3_12 = 1.75550431e-2
+        nuSigmaf3_2 = 2.20225289e-1
         
         # Group 1 Variables
         D_1 = [D0_1, D1_1, D2_1, D3_1]
@@ -274,10 +281,10 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None):
             
             # Fill the B matrix (Production)
             B[k2,int(k2-(x/G))] = Sigmas_12[matc]
-        print('***********A***********')
-        print(A)
-        print('***********B***********')
-        print(B)
+        if dbg: print('***********A***********')
+        if dbg: print(A)
+        if dbg: print('***********B***********')
+        if dbg: print(B)
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Solve for fluxes and k
         
@@ -294,7 +301,9 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None):
             fluxold = flux
             flux = nm.dot(Ainv,(Sold/kold))
             S = nm.dot(B,flux)
+            track_s.append(S)
             keff = kold*nm.sum(S)/nm.sum(Sold)
+            track_k.append(keff)
             fluxdiff = abs((flux-fluxold)/flux)
             maxfluxdiff = fluxdiff.max()
             
@@ -314,37 +323,42 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None):
         elapsedtime = end - start
         
         # Print Statements
-        print('Core materials layout:')
-        print(LayoutSQ)
-        print('Flux of Fast group (Group 1):')
-        print(fluxSQ_1)
-        print('Flux of Thermal group (Group 2):')
-        print(fluxSQ_2)
-        print('k = ', keff)
-        print('Elapsed time = ', elapsedtime, ' seconds')
+        if dbg: print('Core materials layout:')
+        if dbg: print(LayoutSQ)
+        if dbg: print('Flux of Fast group (Group 1):')
+        if dbg: print(fluxSQ_1)
+        if dbg: print('Flux of Thermal group (Group 2):')
+        if dbg: print(fluxSQ_2)
+        if dbg: print('k = ', keff)
+        if dbg: print('Elapsed time = ', elapsedtime, ' seconds')
         
         maxv = nm.max(flux)
+
+            
     
-    
-    
+            
         plt.clf()
         #Create an 8x4 figuer
-        fig = plt.figure(1,(8.,4.))
+        fig = plt.figure(1,(12.,6.))
         #Create an image grid obejct with 1 colorbar
         grid = ImageGrid(fig,111,nrows_ncols=(1,2),axes_pad=0.1,cbar_mode='single')
         
         #Add plots
-        g0 = grid[0].imshow(fluxSQ_1,cmap = 'jet')
+        g0 = grid[0].imshow(fluxSQ_1,cmap = 'jet', vmin=0, vmax=maxv, extent=[0, W, 0, H])
         grid[0].set_title('Group 1')
     
         #g0.set_title('Group 1')
-        grid[1].imshow(fluxSQ_2,cmap = 'jet')
+        grid[1].imshow(fluxSQ_2,cmap = 'jet', vmin=0, vmax=maxv, extent=[0, W, 0, H])
         grid[1].set_title('Group 2')
-    
+        
         #Set colorbar scale
         grid.cbar_axes[0].colorbar(g0)
-        fig.canvas.draw()
-    
+        plt.suptitle('$k_{eff}$ = %s'%(track_k[-1]),fontsize=16)
+        
+
+        if doSave:
+            plt.savefig("%s_%sgroups.png"%(fn,2))
+        
     
         # fig = plt.figure(figsize=(12, 6.4))
     
@@ -371,9 +385,18 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None):
         #cax.patch.set_alpha(0)
         #cax.set_frame_on(False)
         
+#             fig = plt.figure()
+#             plt.plot(track_k)
+#             plt.xlabel('Iteration')
+#             plt.ylabel('k_eff')
+#             #plt.show()
         plt.figtext(0.45,0.04,"X location (cm)",fontdict={'fontsize':14})
         plt.figtext(0.06,0.6,"Y location (cm)",fontdict={'fontsize':14},rotation=90)
-    
+        fig.canvas.draw()
+        #plt.show()
+        
+        
+        return track_k,fluxSQ_1,fluxSQ_2,track_s
         #plt.colorbar(orientation='vertical', label='Flux')
         #ax = fig.add_subplot(111)
         #ax = plt.subplot(111)
@@ -425,78 +448,78 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None):
         
         # Material 1, PWR core
         # Group 1 (Fast)
-        D1_1 = 1.80324864
-        SigmaR1_1 = 3.95267457*(10**(-3))
-        nuSigmaf1_1 = 0.004454564
-        Chi1_1 = 0.986562073
+        D1_1 = 2.06552434
+        SigmaR1_1 = 2.51095160e-3
+        nuSigmaf1_1 = 4.74275835e-3
+        Chi1_1 = 9.86559808e-1
         # Group 2 (Second Fastest)
-        D1_2 = 0.701600432
-        SigmaR1_2 = 0.0463181511
-        Sigmas1_12 = 0.0421423763
-        nuSigmaf1_2 = 0.008106725
-        Chi1_2 = 0.013437928
+        D1_2 = 7.71068096e-1
+        SigmaR1_2 = 1.62852854e-2
+        Sigmas1_12 = 2.77155012e-1
+        nuSigmaf1_2 = 9.38869640e-3
+        Chi1_2 = 1.34401778e-2
         # Group 3 (Second Slowest)
-        D1_3 = 0.548306942
-        SigmaR1_3 = 0.109454699
-        Sigmas1_23 = 0.0251591336
-        nuSigmaf1_3 = 0.0582084432
-        Chi1_3 = 2.25388*(10**(-9))
+        D1_3 = 5.91071784e-1
+        SigmaR1_3 = 3.70188504e-2
+        Sigmas1_23 = 4.65827212e-2
+        nuSigmaf1_3 = 5.44131398e-2
+        Chi1_3 = 2.25429297e-09
         # Group 4 (Thermal)
-        D1_4 = 0.285495579
-        SigmaA1_4 = 0.190054342
-        Sigmas1_34 = 0.170104995
-        nuSigmaf1_4 = 0.208757967
-        Chi1_4 = 3.94762*(10**(-11))
+        D1_4 = 2.82853842e-1
+        SigmaA1_4 = 1.01570554e-1
+        Sigmas1_34 = 2.25025505e-1
+        nuSigmaf1_4 = 1.53005496-1
+        Chi1_4 = 3.94835033e-11
         
         # Material 2, MOX
         # Group 1 (Fast)
-        D2_1 = 1.78613043
-        SigmaR2_1 = 0.004327148
-        nuSigmaf2_1 = 0.005736163
-        Chi2_1 = 0.98773849
+        D2_1 = 2.04261065
+        SigmaR2_1 = 2.90366588e-3
+        nuSigmaf2_1 = 6.06630696e-3
+        Chi2_1 = 9.87740934e-1
         # Group 2 (Second Fastest)
-        D2_2 = 0.689941466
-        SigmaR2_2 = 0.047607277
-        Sigmas2_12 = 0.041571252
-        nuSigmaf2_2 = 0.010269732
-        Chi2_2 = 0.012261513
+        D2_2 = 7.57412732e-1
+        SigmaR2_2 = 1.78555362e-2
+        Sigmas2_12 = 4.72660773e-2
+        nuSigmaf2_2 = 1.19549464e-2
+        Chi2_2 = 1.22590568e-2
         # Group 3 (Second Slowest)
-        D2_3 = 0.498315722
-        SigmaR2_3 = 0.19748874
-        Sigmas2_23 = 0.024665259
-        nuSigmaf2_3 = 0.146808103
-        Chi2_3 = 2.08472*(10**(-9))
+        D2_3 = 5.49056292e-1
+        SigmaR2_3 = 1.04033530e-1
+        Sigmas2_23 = 4.58983518e-2
+        nuSigmaf2_3 = 1.32770360e-1
+        Chi2_3 = 2.08438955e-9
         # Group 4 (Thermal)
-        D2_4 = 0.24343425
-        SigmaA2_4 = 0.305939913
-        Sigmas2_34 = 0.15191336
-        nuSigmaf2_4 = 0.398281008
-        Chi2_4 = 7.37869*(10**(-11))
+        D2_4 = 2.52859473e-1
+        SigmaA2_4 = 1.56617731e-1
+        Sigmas2_34 = 2.01856598e-1
+        nuSigmaf2_4 = 2.48021170e-1
+        Chi2_4 = 7.38793124e-11
         
         # Material 3, 10 w/o U-235
         # Group 1 (Fast)
-        D3_1 = 1.80654311
-        SigmaR3_1 = 0.004359475
-        nuSigmaf3_1 = 0.005448786
-        Chi3_1 = 0.986518979
+        D3_1 = 2.06963658
+        SigmaR3_1 = 2.92107626e-3
+        nuSigmaf3_1 = 5.74169448e-3
+        Chi3_1 = 9.86518443e-1
         # Group 2 (Second Fastest)
-        D3_2 = 0.696967542
-        SigmaR3_2 = 0.050263368
-        Sigmas3_12 = 0.041956231
-        nuSigmaf3_2 = 0.016303875
-        Chi3_2 = 0.013481026
+        D3_2 = 7.63395727e-1
+        SigmaR3_2 = 2.11307574e-2
+        Sigmas3_12 = 4.77483124e-2
+        nuSigmaf3_2 = 1.83885992e-2
+        Chi3_2 = 1.34815481e-2
         # Group 3 (Second Slowest)
-        D3_3 = 0.528903902
-        SigmaR3_3 = 0.138630837
-        Sigmas3_23 = 0.023575004
-        nuSigmaf3_3 = 0.113088846
-        Chi3_3 = 2.26183*(10**(-9))
+        D3_3 = 5.76803029e-1
+        SigmaR3_3 = 5.90367839e-2
+        Sigmas3_23 = 4.43177074e-2
+        nuSigmaf3_3 = 9.99740362e-2
+        Chi3_3 = 2.26192087e-9
         # Group 4 (Thermal)
-        D3_4 = 0.260474712
-        SigmaA3_4 = 0.274183869
-        Sigmas3_34 = 0.161325693
-        nuSigmaf3_4 = 0.373362422
-        Chi3_4 = 3.96154*(10**(-11))
+        D3_4 = 2.64549017e-1
+        SigmaA3_4 = 1.45154640e-1
+        Sigmas3_34 = 2.11455747e-1
+        nuSigmaf3_4 = 2.45367095e-1
+        Chi3_4 = 3.96171013e-11
         
         # Group 1 Variables
         D_1 = [D0_1, D1_1, D2_1, D3_1]
@@ -667,7 +690,9 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None):
             fluxold = flux
             flux = nm.dot(Ainv,(Sold/kold))
             S = nm.dot(B,flux)
+            track_s.append(S)
             keff = kold*nm.sum(S)/nm.sum(Sold)
+            track_k.append(keff)
             fluxdiff = abs((flux-fluxold)/flux)
             maxfluxdiff = fluxdiff.max()
             if dbg: print(time.time()-start,maxfluxdiff)
@@ -692,18 +717,18 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None):
         elapsedtime = end - start
         
         # Print Statements
-        print('Core materials layout:')
-        print(LayoutSQ)
-        print('Flux of Fastest group (Group 1):')
-        print(fluxSQ_1)
-        print('Flux of Second Fastest group (Group 2):')
-        print(fluxSQ_2)
-        print('Flux of Second Slowest group (Group 3):')
-        print(fluxSQ_3)
-        print('Flux of Thermal group (Group 4):')
-        print(fluxSQ_4)
-        print('k = ', keff)
-        print('Elapsed time = ', elapsedtime, ' seconds')
+        if dbg: print('Core materials layout:')
+        if dbg: print(LayoutSQ)
+        if dbg: print('Flux of Fastest group (Group 1):')
+        if dbg: print(fluxSQ_1)
+        if dbg: print('Flux of Second Fastest group (Group 2):')
+        if dbg: print(fluxSQ_2)
+        if dbg: print('Flux of Second Slowest group (Group 3):')
+        if dbg: print(fluxSQ_3)
+        if dbg: print('Flux of Thermal group (Group 4):')
+        if dbg: print(fluxSQ_4)
+        if dbg: print('k = ', keff)
+        if dbg: print('Elapsed time = ', elapsedtime, ' seconds')
         
         
         maxv = nm.max(flux)
@@ -729,28 +754,46 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None):
         # plt.figtext(0.06,0.6,"Y location (cm)",fontdict={'fontsize':18},rotation=90)
         # plt.colorbar(orientation='horizontal', label='Flux')
         # plt.show()
-    
+        #if doPlot:
         #Create an 8x4 figuer
         if dbg: print('Project3Code.solve plot 4 group flux')
         plt.clf()
-        fig = plt.figure(1,(12.,12.))
+        fig = plt.figure(1,(8.,8.))
         #Create an image grid obejct with 1 colorbar
         grid = ImageGrid(fig,111,nrows_ncols=(2,2),axes_pad=0.5,cbar_mode = 'single')#,aspect = False)#,cbar_mode='single')
         
         #Add plots
-        g0 = grid[0].imshow(fluxSQ_1,cmap = 'jet')
+        g0 = grid[0].imshow(fluxSQ_1, vmin=0, vmax=maxv, cmap='jet', extent=[0, W, 0, H])
         grid[0].set_title('Group 1')
     
         #g0.set_title('Group 1')
-        grid[1].imshow(fluxSQ_2,cmap = 'jet')
+        grid[1].imshow(fluxSQ_2, vmin=0, vmax=maxv, cmap='jet', extent=[0, W, 0, H])
         grid[1].set_title('Group 2')
     
-        grid[2].imshow(fluxSQ_3,cmap = 'jet')
+        grid[2].imshow(fluxSQ_3, vmin=0, vmax=maxv, cmap='jet', extent=[0, W, 0, H])
         grid[2].set_title('Group 3')
     
-        grid[3].imshow(fluxSQ_4,cmap='jet')
+        grid[3].imshow(fluxSQ_4, vmin=0, vmax=maxv, cmap='jet', extent=[0, W, 0, H])
         grid[3].set_title('Group 4')
         #Set colorbar scale
         grid.cbar_axes[0].colorbar(g0)
+        if doSave:
+            plt.savefig("%s_%sgroup.png"%(fn,4))
+            #fig.canvas.draw()
         fig.canvas.draw()
-    return keff    
+        return track_k,fluxSQ_1,fluxSQ_2,fluxSQ_3,fluxSQ_4,track_s
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

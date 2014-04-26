@@ -1,4 +1,12 @@
 #################
+## Neutron Diffusion
+#################
+*.core
+calculations/*
+*.png
+*_dump
+
+#################
 ## Eclipse
 #################
 

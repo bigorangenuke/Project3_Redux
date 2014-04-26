@@ -3,6 +3,7 @@ import numpy as np
 M = 0
 N = 0
 
+dbg = False
 
 def loadCore(filename):
     f = open(filename,'r')
@@ -29,7 +30,7 @@ def loadCore(filename):
         l = [int(ll.strip()) for ll in l]
         arr[l[0],l[1]] = l[2]
     
-    print(arr)
+    if dbg: print(arr)
     return arr
 
 if __name__=='__main__':
