@@ -5,6 +5,7 @@
 calculations/*
 *.png
 *_dump
+old/*
 
 #################
 ## Eclipse
