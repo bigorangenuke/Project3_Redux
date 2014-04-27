@@ -100,89 +100,103 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None,doPlot = True,doSave=False):
         D0_1 = 1.56203043
         SigmaR0_1 = 0.0237195306
         nuSigmaf0_1 = 0
+        sigmaf0_1 = 0
         # Group 2 (Thermal)
         D0_2 = 0.271615297
         SigmaA0_2 = 0.129136905
         Sigmas0_12 = 0.213397458
         nuSigmaf0_2 = 0
+        sigmaf0_2 = 0
         
         # Material 1, PWR core (fuel)
         # Group 1 (Fast)
         D1_1 = 1.47514248
         SigmaR1_1 = 8.89804307e-03
         nuSigmaf1_1 = 7.58585753e-03
+        sigmaf1_1 = 2.98927375E-03
         # Group 2 (Thermal)
         D1_2 = 3.34128827e-01
         SigmaA1_2 = 9.00137126e-02
         Sigmas1_12 = 1.93917640e-02
         nuSigmaf1_2 = 1.36130318e-01
+        sigmaf1_2 = 5.58666699E-02
         
         # Material 2, MOX
         # Group 1 (Fast)
         D2_1 = 1.46842682
         SigmaR2_1 = 1.10678272e-2
         nuSigmaf2_1 = 9.30305105e-3
+        sigmaf2_1 = 3.27444798E-03
         # Group 2 (Thermal)
         D2_2 = 2.95294464e-01
         SigmaA2_2 = 1.63709238e-1
         Sigmas2_12 = 1.74693074e-2
         nuSigmaf2_2 = 2.61087507e-1
+        sigmaf2_2 = 9.13106427E-02
         
         # Material 3, 10% U-235
         # Group 1 (Fast)
         D3_1 = 1.48997104
         SigmaR3_1 = 1.14417057e-2
         nuSigmaf3_1 = 1.27420006e-2
+        sigmaf3_1 = 5.09099523E-03
         # Group 2 (Thermal)
         D3_2 = 3.22502375e-01
         SigmaA3_2 = 1.29340038e-1
         Sigmas3_12 = 1.75550431e-2
         nuSigmaf3_2 = 2.20225289e-1
+        sigmaf3_2 = 9.03785005E-02
 		
 		# Material 4, 4% U-235 with control rods
         # Group 1 (Fast)
         D4_1 = 1.37992144
         SigmaR4_1 = 0.021175951
         nuSigmaf4_1 = 0.006275169
+        sigmaf4_1 = 2.44636997E-03
         # Group 2 (Thermal)
         D4_2 = 0.347982913
         SigmaA4_2 = 0.169504672
         Sigmas4_12 = 0.007792421
         nuSigmaf4_2 = 0.170405298
+        sigmaf4_2 = 6.99328110E-02
 		
         # Material 5, MOX with control rods
         # Group 1 (Fast)
         D5_1 = 1.39077759
         SigmaR5_1 = 0.022618704
         nuSigmaf5_1 = 0.010309801
+        sigmaf5_1 = 2.74634222E-03
         # Group 2 (Thermal)
         D5_2 =0.330231041
         SigmaA5_2 = 0.236973867
         Sigmas5_12 = 0.006917485
         nuSigmaf5_2 = 0.301609993
+        sigmaf5_2 = 1.39152989E-01
 		
 		# Material 6, 10% U-235 with control rods
         # Group 1 (Fast)
         D6_1 = 1.37295794
         SigmaR6_1 = 0.022231713
         nuSigmaf6_1 = 0.007814325
+        sigmaf6_1 = 4.08774242E-03
         # Group 2 (Thermal)
         D6_2 =0.291040182
         SigmaA6_2 = 0.313600838
         Sigmas6_12 = 0.006906346
         nuSigmaf6_2 = 0.398054212
+        sigmaf6_2 = 1.23778038E-01
 		
         # Group 1 Variables
         D_1 = [D0_1, D1_1, D2_1, D3_1,D4_1,D5_1,D6_1]
         SigmaR_1 = [SigmaR0_1, SigmaR1_1, SigmaR2_1, SigmaR3_1, SigmaR4_1, SigmaR5_1, SigmaR6_1]
         nuSigmaf_1 = [nuSigmaf0_1, nuSigmaf1_1, nuSigmaf2_1, nuSigmaf3_1, nuSigmaf4_1, nuSigmaf5_1, nuSigmaf6_1]
-        
+        sigmaf_1 = [sigmaf0_1,sigmaf1_1,sigmaf2_1,sigmaf3_1,sigmaf4_1,sigmaf5_1,sigmaf6_1]
         # Group 2 Variables
         D_2 = [D0_2, D1_2, D2_2, D3_2,D4_2,D5_2,D6_2]
         SigmaA_2 = [SigmaA0_2, SigmaA1_2, SigmaA2_2, SigmaA3_2, SigmaA4_2, SigmaA5_2, SigmaA6_2]
         Sigmas_12 = [Sigmas0_12, Sigmas1_12, Sigmas2_12, Sigmas3_12, Sigmas4_12, Sigmas5_12, Sigmas6_12]
         nuSigmaf_2 = [nuSigmaf0_2, nuSigmaf1_2, nuSigmaf2_2, nuSigmaf3_2, nuSigmaf4_2, nuSigmaf5_2, nuSigmaf6_2]
-        
+        sigmaf_2 = [sigmaf0_2,sigmaf1_2,sigmaf2_2,sigmaf3_2,sigmaf4_2,sigmaf5_2,sigmaf6_2]
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Group 1 (of 2) Fast Calculations
         
@@ -386,24 +400,28 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None,doPlot = True,doSave=False):
         SigmaR0_1 = 0.00277833780
         nuSigmaf0_1 = 0
         Chi0_1 = 0
+        sigmaf0_1 = 0
         # Group 2 (Second Fastest)
         D0_2 = 0.698132455
         SigmaR0_2 = 0.0526742376
         Sigmas0_12 = 0.0680920035
         nuSigmaf0_2 = 0
         Chi0_2 = 0
+        sigmaf0_2 = 0
         # Group 3 (Second Slowest)
         D0_3 = 0.447531730
         SigmaR0_3 = 0.130731463
         Sigmas0_23 = 0.0406839401
         nuSigmaf0_3 = 0
         Chi0_3 = 0
+        sigmaf0_3 = 0
         # Group 4 (Thermal)
         D0_4 = 0.218849629
         SigmaA0_4 = 0.128428429
         Sigmas0_34 = 0.284961909
         nuSigmaf0_4 = 0
         Chi0_4 = 0
+        sigmaf0_4 = 0
         
         # Material 1, PWR core
         # Group 1 (Fast)
@@ -411,24 +429,28 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None,doPlot = True,doSave=False):
         SigmaR1_1 = 2.51095160e-3
         nuSigmaf1_1 = 4.74275835e-3
         Chi1_1 = 9.86559808e-1
+        sigmaf1_1 = 1.71996362E-03
         # Group 2 (Second Fastest)
         D1_2 = 7.71068096e-1
         SigmaR1_2 = 1.62852854e-2
         Sigmas1_12 = 2.77155012e-1
         nuSigmaf1_2 = 9.38869640e-3
         Chi1_2 = 1.34401778e-2
+        sigmaf1_2 = 3.85293062E-03
         # Group 3 (Second Slowest)
         D1_3 = 5.91071784e-1
         SigmaR1_3 = 3.70188504e-2
         Sigmas1_23 = 4.65827212e-2
         nuSigmaf1_3 = 5.44131398e-2
         Chi1_3 = 2.25429297e-09
+        sigmaf1_3 = 2.23306660E-02
         # Group 4 (Thermal)
         D1_4 = 2.82853842e-1
         SigmaA1_4 = 1.01570554e-1
         Sigmas1_34 = 2.25025505e-1
         nuSigmaf1_4 = 1.53005496-1
         Chi1_4 = 3.94835033e-11
+        sigmaf1_3 = 6.27920926E-02
         
         # Material 2, MOX
         # Group 1 (Fast)
@@ -436,24 +458,28 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None,doPlot = True,doSave=False):
         SigmaR2_1 = 2.90366588e-3
         nuSigmaf2_1 = 6.06630696e-3
         Chi2_1 = 9.87740934e-1
+        sigmaf2_1 = 2.09894124E-03
         # Group 2 (Second Fastest)
         D2_2 = 7.57412732e-1
         SigmaR2_2 = 1.78555362e-2
         Sigmas2_12 = 4.72660773e-2
         nuSigmaf2_2 = 1.19549464e-2
         Chi2_2 = 1.22590568e-2
+        sigmaf2_2 = 4.24945541E-03
         # Group 3 (Second Slowest)
         D2_3 = 5.49056292e-1
         SigmaR2_3 = 1.04033530e-1
         Sigmas2_23 = 4.58983518e-2
         nuSigmaf2_3 = 1.32770360e-1
         Chi2_3 = 2.08438955e-9
+        sigmaf2_3 = 4.63567451E-02
         # Group 4 (Thermal)
         D2_4 = 2.52859473e-1
         SigmaA2_4 = 1.56617731e-1
         Sigmas2_34 = 2.01856598e-1
         nuSigmaf2_4 = 2.48021170e-1
         Chi2_4 = 7.38793124e-11
+        sigmaf2_4 = 8.68968517E-02
         
         # Material 3, 10% U-235
         # Group 1 (Fast)
@@ -461,24 +487,28 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None,doPlot = True,doSave=False):
         SigmaR3_1 = 2.92107626e-3
         nuSigmaf3_1 = 5.74169448e-3
         Chi3_1 = 9.86518443e-1
+        sigmaf3_1 = 2.10944354E-03
         # Group 2 (Second Fastest)
         D3_2 = 7.63395727e-1
         SigmaR3_2 = 2.11307574e-2
         Sigmas3_12 = 4.77483124e-2
         nuSigmaf3_2 = 1.83885992e-2
         Chi3_2 = 1.34815481e-2
+        sigmaf3_2 = 7.54626608E-03
         # Group 3 (Second Slowest)
         D3_3 = 5.76803029e-1
         SigmaR3_3 = 5.90367839e-2
         Sigmas3_23 = 4.43177074e-2
         nuSigmaf3_3 = 9.99740362e-2
         Chi3_3 = 2.26192087e-9
+        sigmaf3_3 = 4.10284549E-02
         # Group 4 (Thermal)
         D3_4 = 2.64549017e-1
         SigmaA3_4 = 1.45154640e-1
         Sigmas3_34 = 2.11455747e-1
         nuSigmaf3_4 = 2.45367095e-1
         Chi3_4 = 3.96171013e-11
+        sigmaf3_4 = 1.00696474E-01
 		
 		# Material 4, 4% U-235 with control rods
         # Group 1 (Fast)
@@ -486,24 +516,28 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None,doPlot = True,doSave=False):
         SigmaR4_1 = 0.003952675
         nuSigmaf4_1 = 0.004454564
         Chi4_1 = 0.986562073
+        sigmaf4_1 = 1.61944935E-03
         # Group 2 (Second Fastest)
         D4_2 = 0.701600432
         SigmaR4_2 = 0.046318151
         Sigmas4_12 = 0.042142376
         nuSigmaf4_2 = 0.008106725
         Chi4_2 = 0.013437928
+        sigmaf4_2 = 3.32679390E-03
         # Group 3 (Second Slowest)
         D4_3 = 0.548306942
         SigmaR4_3 = 0.109454699
         Sigmas4_23 = 0.025159134
         nuSigmaf4_3 = 0.058208443
         Chi4_3 = 2.25388e-09
+        sigmaf4_3 = 2.38882266E-02
         # Group 4 (Thermal)
         D4_4 = 0.285495579
         SigmaA4_4 = 0.190054342
         Sigmas4_34 = 2.11455747e-1
         nuSigmaf4_4 = 0.208757967
         Chi4_4 = 3.94762e-11
+        sigmaf4_4 = 8.56724158E-02
 		
         # Material 5, MOX with control rods
         # Group 1 (Fast)
@@ -511,76 +545,86 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None,doPlot = True,doSave=False):
         SigmaR5_1 = 0.004327148
         nuSigmaf5_1 = 0.005736163
         Chi5_1 = 0.98773849
+        sigmaf5_1 = 1.98864494E-03
         # Group 2 (Second Fastest)
         D5_2 = 0.689941466
         SigmaR5_2 = 0.047607277
         Sigmas5_12 = 0.041571252
         nuSigmaf5_2 = 0.010269732
         Chi5_2 = 0.012261513
+        sigmaf5_2 = 3.65130370E-03
         # Group 3 (Second Slowest)
         D5_3 = 0.498315722
         SigmaR5_3 = 0.19748874
         Sigmas5_23 = 0.024665259
         nuSigmaf5_3 = 0.146808103
         Chi5_3 = 2.08472e-09
+        sigmaf5_3 = 5.12913205E-02
         # Group 4 (Thermal)
         D5_4 = 0.24343425
         SigmaA5_4 = 0.305939913
         Sigmas5_34 = 0.15191336
         nuSigmaf5_4 = 0.398281008
         Chi5_4 = 7.37869e-11
+        sigmaf5_4 = 1.39537483E-01
+
         # Material 6, 10% U-235 with control rods
         # Group 1 (Fast)
         D6_1 = 1.80654311
         SigmaR6_1 = 0.004359475
         nuSigmaf6_1 = 0.005448786
         Chi6_1 = 0.986518979
+        sigmaf6_1 = 2.10944354E-03
         # Group 2 (Second Fastest)
         D6_2 = 0.696967542
         SigmaR6_2 = 0.050263368
         Sigmas6_12 = 0.041956231
         nuSigmaf6_2 = 0.016303875
         Chi6_2 = 0.013481026
+        sigmaf6_2 = 7.54626608E-03
         # Group 3 (Second Slowest)
         D6_3 = 0.528903902
         SigmaR6_3 = 0.138630837
         Sigmas6_23 = 0.023575004
         nuSigmaf6_3 = 0.113088846
         Chi6_3 = 2.26183E-09
+        sigmaf6_3 = 4.10284549E-02
         # Group 4 (Thermal)
         D6_4 = 0.260474712
         SigmaA6_4 = 0.274183869
         Sigmas6_34 = 0.161325693
         nuSigmaf6_4 = 0.373362422
         Chi6_4 = 3.96154E-11
+        sigmaf6_4 = 1.00696474E-01
         
         # Group 1 Variables
         D_1 = [D0_1, D1_1, D2_1, D3_1, D4_1, D5_1, D6_1]
         SigmaR_1 = [SigmaR0_1, SigmaR1_1, SigmaR2_1, SigmaR3_1, SigmaR4_1, SigmaR5_1, SigmaR6_1]
         nuSigmaf_1 = [nuSigmaf0_1, nuSigmaf1_1, nuSigmaf2_1, nuSigmaf3_1, nuSigmaf4_1, nuSigmaf5_1, nuSigmaf6_1]
         Chi_1 = [Chi0_1, Chi1_1, Chi2_1, Chi3_1, Chi4_1, Chi5_1, Chi6_1]
-        
+        sigmaf_1 = [sigmaf0_1,sigmaf1_1,sigmaf2_1,sigmaf3_1,sigmaf4_1,sigmaf5_1,sigmaf6_1]
         # Group 2 Variables
         D_2 = [D0_2, D1_2, D2_2, D3_2, D4_2, D5_2, D6_2]
         SigmaA_2 = [SigmaR0_2, SigmaR1_2, SigmaR2_2, SigmaR3_2, SigmaR4_2, SigmaR5_2, SigmaR6_2]
         Sigmas_12 = [Sigmas0_12, Sigmas1_12, Sigmas2_12, Sigmas3_12, Sigmas4_12, Sigmas5_12, Sigmas6_12]
         nuSigmaf_2 = [nuSigmaf0_2, nuSigmaf1_2, nuSigmaf2_2, nuSigmaf3_2, nuSigmaf4_2, nuSigmaf5_2, nuSigmaf6_2]
         Chi_2 = [Chi0_2, Chi1_2, Chi2_2, Chi3_2, Chi4_2, Chi5_2, Chi6_2]
-        
+        sigmaf_2 = [sigmaf0_2,sigmaf1_2,sigmaf2_2,sigmaf3_2,sigmaf4_2,sigmaf5_2,sigmaf6_2]
         # Group 3 Variables
         D_3 = [D0_3, D1_3, D2_3, D3_3, D4_3, D5_3, D6_3]
         SigmaR_3 = [SigmaR0_3, SigmaR1_3, SigmaR2_3, SigmaR3_3, SigmaR4_3, SigmaR5_3, SigmaR6_3]
         Sigmas_23 = [Sigmas0_23, Sigmas1_23, Sigmas2_23, Sigmas3_23, Sigmas4_23, Sigmas5_23, Sigmas6_23]
         nuSigmaf_3 = [nuSigmaf0_3, nuSigmaf1_3, nuSigmaf2_3, nuSigmaf3_3, nuSigmaf4_3, nuSigmaf5_3, nuSigmaf6_3]
         Chi_3 = [Chi0_3, Chi1_3, Chi2_3, Chi3_3, Chi4_3, Chi5_3, Chi6_3]
-        
+        sigmaf_3 = [sigmaf0_3,sigmaf1_3,sigmaf2_3,sigmaf3_3,sigmaf4_3,sigmaf5_3,sigmaf6_3]
         # Group 4 Variables
         D_4 = [D0_4, D1_4, D2_4, D3_4, D4_4, D5_4, D6_4]
         SigmaA_4 = [SigmaA0_4, SigmaA1_4, SigmaA2_4, SigmaA3_4, SigmaA4_4, SigmaA5_4, SigmaA6_4]
         Sigmas_34 = [Sigmas0_34, Sigmas1_34, Sigmas2_34, Sigmas3_34, Sigmas4_34, Sigmas5_34, Sigmas6_34]
         nuSigmaf_4 = [nuSigmaf0_4, nuSigmaf1_4, nuSigmaf2_4, nuSigmaf3_4, nuSigmaf4_4, nuSigmaf5_4, nuSigmaf6_4]
         Chi_4 = [Chi0_4, Chi1_4, Chi2_4, Chi3_4, Chi4_4, Chi5_4, Chi6_4]
-		
+		sigmaf_4 = [sigmaf0_4,sigmaf1_4,sigmaf2_4,sigmaf3_4,sigmaf4_4,sigmaf5_4,sigmaf6_4]
+
         if dbg:print(time.time()-start)
         if dbg:print('~~~~Start Group 1 of 4~~~~')
         # ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -789,7 +833,7 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None,doPlot = True,doSave=False):
         # plt.colorbar(orientation='horizontal', label='Flux')
         # plt.show()
         #if doPlot:
-        #Create an 8x4 figuer
+        #Create an 8x4 figure
         if dbg: print('Project3Code.solve plot 4 group flux')
         plt.clf()
         fig = plt.figure(1,(8.,8.))
