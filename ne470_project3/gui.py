@@ -20,12 +20,14 @@ CELL_SIZE = 30
 class CellMaterial():
     #Dictionary of possible cell materials
     def __init__(self):
-        self.materials = {'Water': 0,'4% LEU':1,'MOX':2,'10% LEU':3}
+        self.materials = {'Water': 0,'4% LEU':1,'MOX':2,'10% LEU':3 , '4% LEU (rods)':4,'MOX (rods)':5,'10% LEU (rods)':6}
         self.fuel   =   self.materials['4% LEU']
         self.water  =   self.materials['Water']
         self.mox    =   self.materials['MOX']
         self.du     =   self.materials['10% LEU']
-        
+        self.fuel_r =   self.materials['4% LEU (rods)']
+        self.mox_r  =   self.materials['MOX (rods)']
+        self.du_r   =   self.materials['10% LEU (rods)']
 class MainWindow(QtGui.QMainWindow):
     def __init__(self,parent=None):
         if dbg: print('MainWindow.__init__()')
@@ -81,6 +83,7 @@ class NodeTableWidgetItem(QtGui.QTableWidgetItem):
         if dbg: print('gui.NodeTableWidgetItem.color()')
         color = QtGui.QColor(255,255,255)
         #print('material = ', self.material)
+        brushpattern = QtCore.Qt.SolidPattern
         if self.material==1:
             color = QtGui.QColor(255,0,0)
         elif self.material==0:
@@ -89,8 +92,18 @@ class NodeTableWidgetItem(QtGui.QTableWidgetItem):
             color = QtGui.QColor(255,128,0)
         elif self.material==3:
             color = QtGui.QColor(60,60,60)
+        elif self.material==4:
+            color = QtGui.QColor(255,0,0)
+            brushpattern = QtCore.Qt.CrossPattern
+            brushpattern = QtCore.Qt.Dense6Pattern
+        elif self.material==5:
+            color = QtGui.QColor(255,128,0)
+            brushpattern = QtCore.Qt.CrossPattern
+        elif self.material==6:
+            color = QtGui.QColor(60,60,60)
+            brushpattern = QtCore.Qt.CrossPattern
         brush = QtGui.QBrush(color)
-        brush.setStyle(QtCore.Qt.SolidPattern)
+        brush.setStyle(brushpattern)
         self.setBackground(brush)
  
     def __repr__(self):
@@ -212,6 +225,7 @@ class CoreWidget(QtGui.QWidget):
         
         #Create buttons for each material 
         matkeys = list(CellMaterial().materials.keys())
+        matkeys.sort()
         layout = self.nodeMaterialLayout
         for key in matkeys:
             btn = QtGui.QPushButton(key)
@@ -223,8 +237,14 @@ class CoreWidget(QtGui.QWidget):
                 btn.clicked.connect(self.colorCoreFuel)
             if key=='MOX':
                 btn.clicked.connect(self.colorCoreMox)
+            if key=='4% LEU (rods)':
+                btn.clicked.connect(self.colorCoreFuel_r)
+            if key=='MOX (rods)':
+                btn.clicked.connect(self.colorCoreMox_r)
+            if key=='10% LEU (rods)':
+                btn.clicked.connect(self.colorCoreDu_r)
             layout.addWidget(btn)
-
+            
     def colorCoreWater(self):
         for item in self.coreTable.selectedItems():
             item.set_material(int(CellMaterial().materials['Water']))
@@ -243,6 +263,21 @@ class CoreWidget(QtGui.QWidget):
     def colorCoreMox(self):
         for item in self.coreTable.selectedItems():
             item.set_material(int(CellMaterial().materials['MOX']))
+        self.saveCore('_currentcore')
+        
+    def colorCoreFuel_r(self):
+        for item in self.coreTable.selectedItems():
+            item.set_material(int(CellMaterial().materials['4% LEU (rods)']))
+        self.saveCore('_currentcore')
+        
+    def colorCoreMox_r(self):
+        for item in self.coreTable.selectedItems():
+            item.set_material(int(CellMaterial().materials['MOX (rods)']))
+        self.saveCore('_currentcore')
+        
+    def colorCoreDu_r(self):
+        for item in self.coreTable.selectedItems():
+            item.set_material(int(CellMaterial().materials['10% LEU (rods)']))
         self.saveCore('_currentcore')
         
 
