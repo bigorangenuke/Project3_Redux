@@ -450,7 +450,7 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None,doPlot = True,doSave=False):
         Sigmas1_34 = 2.25025505e-1
         nuSigmaf1_4 = 1.53005496-1
         Chi1_4 = 3.94835033e-11
-        sigmaf1_3 = 6.27920926E-02
+        sigmaf1_4 = 6.27920926E-02
         
         # Material 2, MOX
         # Group 1 (Fast)
@@ -623,7 +623,7 @@ def solve(M=10,N=10,W=100,H=100,G=4,filename=None,doPlot = True,doSave=False):
         Sigmas_34 = [Sigmas0_34, Sigmas1_34, Sigmas2_34, Sigmas3_34, Sigmas4_34, Sigmas5_34, Sigmas6_34]
         nuSigmaf_4 = [nuSigmaf0_4, nuSigmaf1_4, nuSigmaf2_4, nuSigmaf3_4, nuSigmaf4_4, nuSigmaf5_4, nuSigmaf6_4]
         Chi_4 = [Chi0_4, Chi1_4, Chi2_4, Chi3_4, Chi4_4, Chi5_4, Chi6_4]
-		sigmaf_4 = [sigmaf0_4,sigmaf1_4,sigmaf2_4,sigmaf3_4,sigmaf4_4,sigmaf5_4,sigmaf6_4]
+        sigmaf_4 = [sigmaf0_4,sigmaf1_4,sigmaf2_4,sigmaf3_4,sigmaf4_4,sigmaf5_4,sigmaf6_4]
 
         if dbg:print(time.time()-start)
         if dbg:print('~~~~Start Group 1 of 4~~~~')
